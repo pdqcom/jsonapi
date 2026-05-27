@@ -216,12 +216,14 @@ defmodule JSONAPI.Serializer do
   end
 
   @spec encode_relation(tuple()) :: map()
-  def encode_relation({rel_view, rel_data, _rel_url, _related_resource_url} = info) do
+  def encode_relation({rel_view, rel_data, _rel_url, _related_resource_url} = _info) do
     data = %{
       data: encode_rel_data(rel_view, rel_data)
     }
 
-    merge_related_links(data, info, add_auto_links?())
+    # Temporarily force disable relationship object links until we fix https://github.com/beam-community/jsonapi/issues/435
+    # merge_related_links(data, info, add_auto_links?())
+    data
   end
 
   defp merge_links(doc, data, view, conn, _page, false, _options, is_root_of_doc) do
@@ -282,15 +284,15 @@ defmodule JSONAPI.Serializer do
     Map.merge(doc, %{links: auto_links})
   end
 
-  defp merge_related_links(
-         encoded_data,
-         {_rel_view, _rel_data, rel_url, related_resource_url},
-         true = _add_auto_links
-       ) do
-    Map.merge(encoded_data, %{links: %{self: rel_url, related: related_resource_url}})
-  end
-
-  defp merge_related_links(encoded_rel_data, _info, _add_auto_links), do: encoded_rel_data
+  # defp merge_related_links(
+  #        encoded_data,
+  #        {_rel_view, _rel_data, rel_url, related_resource_url},
+  #        true = _add_auto_links
+  #      ) do
+  #   Map.merge(encoded_data, %{links: %{self: rel_url, related: related_resource_url}})
+  # end
+  #
+  # defp merge_related_links(encoded_rel_data, _info, _add_auto_links), do: encoded_rel_data
 
   @spec encode_rel_data(module(), map() | list()) :: map() | nil
   def encode_rel_data(_view, nil), do: nil
