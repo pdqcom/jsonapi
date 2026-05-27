@@ -533,7 +533,9 @@ defmodule JSONAPI.SerializerTest do
     assert %{
              data: %{
                relationships: %{
-                 author: %{links: %{self: "/mytype/1/relationships/author", related: "/mytype/1/author"}}
+                 # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+                 # author: %{links: %{self: "/mytype/1/relationships/author", related: "/mytype/1/author"}}
+                 author: %{}
                }
              }
            } = Serializer.serialize(PostView, data, nil)
@@ -613,8 +615,9 @@ defmodule JSONAPI.SerializerTest do
 
     encoded = Serializer.serialize(PostView, data, conn)
 
-    assert encoded.data.relationships.author.links.self ==
-             "http://www.example.com/mytype/1/relationships/author"
+    # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+    # assert encoded.data.relationships.author.links.self ==
+    #          "http://www.example.com/mytype/1/relationships/author"
 
     assert Enum.count(encoded.included) == 4
   end
@@ -698,8 +701,9 @@ defmodule JSONAPI.SerializerTest do
 
     encoded = Serializer.serialize(UserView, data, conn)
 
-    assert encoded.data.relationships.company.links.self ==
-             "http://www.example.com/user/1/relationships/company"
+    # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+    # assert encoded.data.relationships.company.links.self ==
+    #          "http://www.example.com/user/1/relationships/company"
 
     assert Enum.count(encoded.included) == 1
   end
@@ -724,8 +728,9 @@ defmodule JSONAPI.SerializerTest do
 
     encoded = Serializer.serialize(UserView, data, conn)
 
-    assert encoded.data.relationships.company.links.self ==
-             "http://www.example.com/user/1/relationships/company"
+    # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+    # assert encoded.data.relationships.company.links.self ==
+    #          "http://www.example.com/user/1/relationships/company"
 
     assert Enum.count(encoded.included) == 2
   end
@@ -761,8 +766,9 @@ defmodule JSONAPI.SerializerTest do
 
     encoded = Serializer.serialize(UserView, data, conn)
 
-    assert encoded.data.relationships.company.links.self ==
-             "http://www.example.com/user/1/relationships/company"
+    # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+    # assert encoded.data.relationships.company.links.self ==
+    #          "http://www.example.com/user/1/relationships/company"
 
     assert Enum.count(encoded.included) == 4
   end
@@ -814,8 +820,9 @@ defmodule JSONAPI.SerializerTest do
 
       assert List.first(relationships["bestComments"][:data])[:id] == "5"
 
-      assert relationships["bestComments"][:links][:self] ==
-               "/mytype/1/relationships/bestComments"
+      # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+      # assert relationships["bestComments"][:links][:self] ==
+      #          "/mytype/1/relationships/bestComments"
     end
   end
 
@@ -873,8 +880,9 @@ defmodule JSONAPI.SerializerTest do
 
       assert List.first(relationships["best-comments"][:data])[:id] == "5"
 
-      assert relationships["best-comments"][:links][:self] ==
-               "/mytype/1/relationships/best-comments"
+      # Relationship links temporarily disabled until we fix https://github.com/beam-community/jsonapi/issues/435
+      # assert relationships["best-comments"][:links][:self] ==
+      #          "/mytype/1/relationships/best-comments"
     end
   end
 
