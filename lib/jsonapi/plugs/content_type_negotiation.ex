@@ -1,7 +1,6 @@
 defmodule JSONAPI.ContentTypeNegotiation do
   @moduledoc """
-  Provides content type negotiation by validating the `content-type`
-  and `accept` headers.
+  Provides content type negotiation by validating the `content-type` header.
 
   The proper jsonapi.org content type is
   `application/vnd.api+json`. As per [the spec](http://jsonapi.org/format/#content-negotiation-servers)
@@ -9,8 +8,7 @@ defmodule JSONAPI.ContentTypeNegotiation do
   This plug does three things:
 
   1. Returns 415 unless the content-type header is correct.
-  2. Returns 406 unless the accept header is correct.
-  3. Registers a before send hook to set the content-type if not already set.
+  2. Registers a before send hook to set the content-type if not already set.
   """
 
   import JSONAPI.ErrorView
@@ -24,17 +22,7 @@ defmodule JSONAPI.ContentTypeNegotiation do
   def call(conn, _opts) do
     conn
     |> content_type
-    |> accepts
     |> respond
-  end
-
-  defp accepts({conn, content_type}) do
-    accepts =
-      conn
-      |> get_req_header("accept")
-      |> List.first()
-
-    {conn, content_type, accepts}
   end
 
   defp content_type(conn) do
@@ -46,16 +34,11 @@ defmodule JSONAPI.ContentTypeNegotiation do
     {conn, content_type}
   end
 
-  defp respond({conn, content_type, accepts}) do
-    cond do
-      validate_header(content_type) and validate_header(accepts) == true ->
-        add_header_to_resp(conn)
-
-      validate_header(content_type) == false ->
-        send_error(conn, incorrect_content_type())
-
-      validate_header(accepts) == false ->
-        send_error(conn, 406)
+  defp respond({conn, content_type}) do
+    if validate_header(content_type) do
+      add_header_to_resp(conn)
+    else
+      send_error(conn, incorrect_content_type())
     end
   end
 
