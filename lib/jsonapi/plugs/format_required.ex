@@ -66,7 +66,7 @@ defmodule JSONAPI.FormatRequired do
     end
   end
 
-  def call(%{method: "POST", params: %{"data" => %{"type" => _}}} = conn, _), do: conn
+  def call(%{method: method, params: %{"data" => %{"type" => _}}} = conn, _) when method in ~w[POST PUT], do: conn
 
   def call(%{method: method, params: %{"data" => [%{"type" => _} | _]}} = conn, _)
       when method in @update_has_many_relationships_methods do
