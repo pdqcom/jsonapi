@@ -10,7 +10,8 @@ defmodule JSONAPI.FormatRequired do
 
   def init(opts), do: opts
 
-  def call(%{method: method} = conn, _opts) when method in ~w[DELETE GET HEAD], do: conn
+  # Don't have any body format restrictions on PUT given it's not specified in JSON:API
+  def call(%{method: method} = conn, _opts) when method in ~w[DELETE GET HEAD PUT], do: conn
 
   def call(
         %{method: method, params: %{"data" => %{"type" => _, "relationships" => relationships}}} =
