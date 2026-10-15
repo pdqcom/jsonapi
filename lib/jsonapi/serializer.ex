@@ -77,7 +77,7 @@ defmodule JSONAPI.Serializer do
       relationships: %{}
     }
 
-    doc = merge_links(encoded_data, data, view, conn, nil, add_auto_links?(), options, false)
+    doc = merge_links(encoded_data, data, view, conn, nil, resource_self_links?(), options, false)
 
     doc =
       case view.meta(data, conn) do
@@ -355,6 +355,13 @@ defmodule JSONAPI.Serializer do
 
   defp add_auto_links? do
     Application.get_env(:jsonapi, :add_auto_links, !remove_links?())
+  end
+
+  def resource_self_links? do
+    # Don't globally enable serialization of resource self links for resources.
+    # GET single resource might not exist for some.
+    # They can easily be opted-in in the per resource view links callback.
+    false
   end
 
   @spec serialize_nil_relationships? :: boolean()

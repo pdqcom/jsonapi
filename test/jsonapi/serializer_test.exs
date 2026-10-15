@@ -290,7 +290,6 @@ defmodule JSONAPI.SerializerTest do
     encoded_data = encoded[:data]
     assert encoded_data[:id] == PostView.id(data)
     assert encoded_data[:type] == PostView.type()
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
 
     assert %{meta_text: "meta_Hello"} = encoded_data[:meta]
 
@@ -298,7 +297,6 @@ defmodule JSONAPI.SerializerTest do
     assert attributes[:text] == data[:text]
     assert attributes[:body] == data[:body]
 
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
     assert map_size(encoded_data[:relationships]) == 2
 
     assert Enum.count(encoded[:included]) == 4
@@ -358,7 +356,6 @@ defmodule JSONAPI.SerializerTest do
       assert attributes[:text] == data[:text]
       assert attributes[:body] == data[:body]
 
-      assert enc[:links][:self] == PostView.url_for(data, conn)
       assert map_size(enc[:relationships]) == 2
     end)
 
@@ -404,7 +401,6 @@ defmodule JSONAPI.SerializerTest do
     assert attributes[:text] == data[:text]
     assert attributes[:body] == data[:body]
 
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
     assert map_size(encoded_data[:relationships]) == 2
     assert encoded_data[:relationships][:best_comments][:data] == []
 
@@ -430,7 +426,6 @@ defmodule JSONAPI.SerializerTest do
     assert attributes[:text] == data[:text]
     assert attributes[:body] == data[:body]
 
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
     refute Map.has_key?(encoded_data[:relationships], :best_comments)
     assert map_size(encoded_data[:relationships]) == 1
 
@@ -456,7 +451,6 @@ defmodule JSONAPI.SerializerTest do
     assert attributes[:text] == data[:text]
     assert attributes[:body] == data[:body]
 
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
     refute Map.has_key?(encoded_data[:relationships], :best_comments)
     assert map_size(encoded_data[:relationships]) == 1
 
@@ -484,7 +478,6 @@ defmodule JSONAPI.SerializerTest do
     assert attributes[:text] == data[:text]
     assert attributes[:body] == data[:body]
 
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
     assert map_size(encoded_data[:relationships]) == 3
     assert encoded_data[:relationships][:best_comments][:data] == nil
     assert encoded_data[:relationships][:polymorphics][:data] == nil
@@ -513,7 +506,6 @@ defmodule JSONAPI.SerializerTest do
     assert attributes[:text] == data[:text]
     assert attributes[:body] == data[:body]
 
-    assert encoded_data[:links][:self] == PostView.url_for(data, nil)
     assert map_size(encoded_data[:relationships]) == 2
     assert Map.has_key?(encoded_data[:relationships], :polymorphics)
     refute Map.has_key?(encoded_data[:relationships], :best_comments)
@@ -1120,7 +1112,6 @@ defmodule JSONAPI.SerializerTest do
            }
 
     expected_links = %{
-      self: "/expensive-resource/#{data.id}",
       queue: "/expensive-resource/queue/#{data.id}",
       promotions: %{
         href: "/promotions?rel=#{data.id}",
@@ -1158,9 +1149,6 @@ defmodule JSONAPI.SerializerTest do
 
     assert encoded[:links][:self] ==
              "http://www.example.com/mytype?page%5Bpage%5D=2&page%5Bsize%5D=1"
-
-    assert List.first(encoded[:data])[:links][:self] ==
-             "http://www.example.com/mytype/1"
   end
 
   test "extrapolates relationship config simplest case" do
